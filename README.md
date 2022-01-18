@@ -1,40 +1,67 @@
-## Prometheus on GCP
+# Prometheus on GCP
+
+> Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
 
 ### Install dependencies
-`brew install jsonnet-bundler`
-`brew install jsonnet`
-`brew install go`
-`go install github.com/brancz/gojsontoyaml@latest`
-`go install github.com/google/go-jsonnet/cmd/jsonnet@latest`
-`brew install wget`
+```
+jsonnet-bundler
+```
+```
+jsonnet
+```
+```
+go
+go install github.com/brancz/gojsontoyaml@latest
+go install github.com/google/go-jsonnet/cmd/jsonnet@latest
+```
+```
+wget
+```
 
-### Make the directories
-```mkdir kube-prometheus```
-```cd kube-prometheus```
+### Create the install directory
+```
+mkdir kube-prometheus
+```
+```
+cd kube-prometheus
+```
 
-### Then run jb init and install
+### Initialize jb and install kube-prometheus
+```
 jb init
+```
+```
 jb install github.com/prometheus-operator/kube-prometheus/jsonnet/kube-prometheus@main
+```
 
 ### Pull the example.jsonnet and build.sh files
+```
 wget https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/example.jsonnet -O example.jsonnet
+```
+```
 wget https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/build.sh -O build.sh
+```
 
 ### Update jb
-`jb update`
-
-### If you need to update GOPATH
-`vim build.sh`, edit below line
-
-# Calling gojsontoyaml is optional, but we would like to generate yaml, not json
-`jsonnet -J vendor -m manifests "${1-example.jsonnet}" | xargs -I{} sh -c 'cat {} | $(go env GOPATH)/bin/gojsontoyaml > {}.yaml; rm -f {}' -- {}`
+```
+jb update
+```
 
 ### Make build.sh executable
+```
 chmod +x build.sh
+```
+
+> Note: If you need to update GOPATH in the build.sh file edit line as below:
+> 
+> ```jsonnet -J vendor -m manifests "${1-example.jsonnet}" | xargs -I{} sh -c 'cat {} | $(go env GOPATH)/bin/gojsontoyaml > {}.yaml; rm -f {}' -- {}```
+>
 
 ### Build the customization file
 
-memsql.jsonnet
+```
+vim memsql.jsonnet
+```
 ```
 local kp = (import 'kube-prometheus/main.libsonnet') + {
   values+:: {
@@ -117,22 +144,33 @@ local kp = (import 'kube-prometheus/main.libsonnet') + {
 { ['memsql-metrics-' + name]: kp.memsqlMetrics[name] for name in std.objectFields(kp.memsqlMetrics) } +
 { ['memsql-cluster-metrics-' + name]: kp.memsqlClusterMetrics[name] for name in std.objectFields(kp.memsqlClusterMetrics) }
 ```
+> Note: Only change the namespace inside of this file where it says `singlestore`
+
 
 ### Apply the build to the manifest files
+```
 ./build.sh memsql.jsonnet
+```
 
 ### Create the kubernetes objects
+```
 kubectl apply --server-side -f manifests/setup
+```
+```
 kubectl apply -f manifests/
+```
 
 ### Access Prometheus locally
+```
 kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
+```
 
 ### Access Grafana locally
+```
 kubectl --namespace monitoring port-forward svc/grafana 3000
-
+```
 
 #### Reference
 
-##### To expose behind ingress check out the link below
-https://github.com/prometheus-operator/kube-prometheus/blob/main/docs/customizations/exposing-prometheus-alertmanager-grafana-ingress.md
+> To expose behind ingress check out the link below
+> https://github.com/prometheus-operator/kube-prometheus/blob/main/docs/customizations/exposing-prometheus-alertmanager-grafana-ingress.md
