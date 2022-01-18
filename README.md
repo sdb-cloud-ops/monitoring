@@ -172,5 +172,5 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 
 #### Reference
 
-> To expose behind ingress check out the link below
+> To expose behind ingress:
 > https://github.com/prometheus-operator/kube-prometheus/blob/main/docs/customizations/exposing-prometheus-alertmanager-grafana-ingress.md
