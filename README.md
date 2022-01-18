@@ -144,7 +144,7 @@ local kp = (import 'kube-prometheus/main.libsonnet') + {
 { ['memsql-metrics-' + name]: kp.memsqlMetrics[name] for name in std.objectFields(kp.memsqlMetrics) } +
 { ['memsql-cluster-metrics-' + name]: kp.memsqlClusterMetrics[name] for name in std.objectFields(kp.memsqlClusterMetrics) }
 ```
-> Note: Only change the namespace inside of this file where it says `singlestore`
+> Note: Only change the namespace inside of this file where it says `singlestore` to the namespace that you have SingleStore deployed.
 
 
 ### Apply the build to the manifest files
