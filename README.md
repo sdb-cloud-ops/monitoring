@@ -1,12 +1,12 @@
 ## Prometheus on GCP
 
 ### Install dependencies
-brew install jsonnet-bundler
-brew install jsonnet
-brew install go
-go install github.com/brancz/gojsontoyaml@latest
-go install github.com/google/go-jsonnet/cmd/jsonnet@latest
-brew install wget
+`brew install jsonnet-bundler`
+`brew install jsonnet`
+`brew install go`
+`go install github.com/brancz/gojsontoyaml@latest`
+`go install github.com/google/go-jsonnet/cmd/jsonnet@latest`
+`brew install wget`
 
 ### Make the directories
 ```mkdir kube-prometheus```
