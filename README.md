@@ -3,20 +3,19 @@
 > Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
 
 ### Install dependencies
+> On MacOS you can use `brew` to install these packages
+
+1. [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler)
+
+2. [jsonnet](https://github.com/google/jsonnet)
+
+3. [go](https://go.dev/doc/install)
 ```
-jsonnet-bundler
+  go install github.com/brancz/gojsontoyaml@latest
+  go install github.com/google/go-jsonnet/cmd/jsonnet@latest
 ```
-```
-jsonnet
-```
-```
-go
-go install github.com/brancz/gojsontoyaml@latest
-go install github.com/google/go-jsonnet/cmd/jsonnet@latest
-```
-```
-wget
-```
+4. wget
+
 
 ### Create the install directory
 ```
@@ -169,8 +168,3 @@ kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ```
 kubectl --namespace monitoring port-forward svc/grafana 3000
 ```
-
-#### Reference
-
-> To expose behind ingress:
-> https://github.com/prometheus-operator/kube-prometheus/blob/main/docs/customizations/exposing-prometheus-alertmanager-grafana-ingress.md
