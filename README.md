@@ -206,4 +206,14 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 ### Access SingleStore logs
 <img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
 
+> Kube-prometheus has also added 24 dashboards to Grafana to get you started with dashboard monitoring
 
+### Click on Dashboards > Browse
+<img width="247" alt="Screen Shot 2022-02-01 at 2 45 32 PM" src="https://user-images.githubusercontent.com/16610646/152040633-dfc416c5-ae0a-4036-b62e-b43243c590f3.png">
+
+### Expand the Default folder
+<img width="1373" alt="Screen Shot 2022-02-01 at 2 45 53 PM" src="https://user-images.githubusercontent.com/16610646/152040686-5a7c0dea-419a-45d9-9eab-fb5bc31b805b.png">
+
+### Click on a dashboard to try it out! 
+
+> Now we have installed a monitoring stack consisting of Prometheus, Grafana, Loki, and FluentBit
