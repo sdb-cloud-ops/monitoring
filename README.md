@@ -165,13 +165,8 @@ kubectl apply -f manifests/
 kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ```
 
-### Access Grafana locally
-```
-kubectl --namespace monitoring port-forward svc/grafana 3000
-``` 
-
-### Add Loki + FluentBit with a persistant volume claim
-Install Helm 
+## Add Loki + FluentBit with a persistant volume claim
+Prereqs: Install [Helm](https://helm.sh/docs/intro/install/)
 
 ```
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -182,3 +177,25 @@ helm repo update
 ```
 helm upgrade --install loki --namespace=monitoring grafana/loki-stack --set fluent-bit.enabled=true,promtail.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=standard,loki.persistence.size=5Gi
 ```
+> Note: you can change the size of the volume claim in the last command
+
+## Add the Loki data source to Grafana
+
+### Access Grafana locally
+```
+kubectl --namespace monitoring port-forward svc/grafana 3000
+``` 
+### Go to Configuration > Data Sources
+<img width="252" alt="Screen Shot 2022-02-01 at 2 35 32 PM" src="https://user-images.githubusercontent.com/16610646/152038532-d4a3b68a-da39-4b94-b45c-a31401386b93.png">
+
+### Click add data source and then type in 'Loki'
+<img width="190" alt="Screen Shot 2022-02-01 at 2 36 44 PM" src="https://user-images.githubusercontent.com/16610646/152038758-e6f8d6fc-d802-4a22-a069-16c5dc95d63e.png">
+
+### Type in the Loki URL
+<img width="690" alt="Screen Shot 2022-02-01 at 2 37 45 PM" src="https://user-images.githubusercontent.com/16610646/152038840-e74cef93-b044-4edd-bca4-8dcc443f9787.png">
+
+### Click 'Save & Test' and you should see the message below
+<img width="570" alt="Screen Shot 2022-02-01 at 2 38 21 PM" src="https://user-images.githubusercontent.com/16610646/152038985-3d2c9fcf-92cd-4867-9e64-ec516af68d2e.png">
+
+
+
