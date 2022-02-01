@@ -167,4 +167,17 @@ kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ### Access Grafana locally
 ```
 kubectl --namespace monitoring port-forward svc/grafana 3000
+``` 
+
+### Add Loki + FluentBit with PVC to Grafana
+Install Helm 
+
+```
+helm repo add grafana https://grafana.github.io/helm-charts
+```
+```
+helm repo update
+```
+```
+helm upgrade --install loki --namespace=monitoring grafana/loki-stack --set fluent-bit.enabled=true,promtail.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=standard,loki.persistence.size=5Gi
 ```
