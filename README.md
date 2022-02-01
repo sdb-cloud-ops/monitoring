@@ -1,5 +1,6 @@
-# Prometheus on GCP
+# Monitoring your Kubernetes stack on GKE
 
+## Install Prometheus
 > Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
 
 ### Install dependencies
@@ -169,7 +170,7 @@ kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 kubectl --namespace monitoring port-forward svc/grafana 3000
 ``` 
 
-### Add Loki + FluentBit with PVC to Grafana
+### Add Loki + FluentBit with a persistant volume claim
 Install Helm 
 
 ```
