@@ -181,38 +181,38 @@ helm upgrade --install loki --namespace=monitoring grafana/loki-stack --set flue
 
 ## Add the Loki data source to Grafana
 
-### Access Grafana locally
+#### Access Grafana locally
 ```
 kubectl --namespace monitoring port-forward svc/grafana 3000
 ``` 
-### Go to Configuration > Data Sources
+#### Go to Configuration > Data Sources
 <img width="252" alt="Screen Shot 2022-02-01 at 2 35 32 PM" src="https://user-images.githubusercontent.com/16610646/152038532-d4a3b68a-da39-4b94-b45c-a31401386b93.png">
 
-### Click add data source and then type in 'Loki'
+#### Click add data source and then type in 'Loki'
 <img width="190" alt="Screen Shot 2022-02-01 at 2 36 44 PM" src="https://user-images.githubusercontent.com/16610646/152038758-e6f8d6fc-d802-4a22-a069-16c5dc95d63e.png">
 
-### Enter the Loki URL
+#### Enter the Loki URL
 <img width="690" alt="Screen Shot 2022-02-01 at 2 37 45 PM" src="https://user-images.githubusercontent.com/16610646/152038840-e74cef93-b044-4edd-bca4-8dcc443f9787.png">
 
-### Click 'Save & Test' and you should see the message below
+#### Click 'Save & Test' and you should see the message below
 <img width="570" alt="Screen Shot 2022-02-01 at 2 38 21 PM" src="https://user-images.githubusercontent.com/16610646/152038985-3d2c9fcf-92cd-4867-9e64-ec516af68d2e.png">
 
-### Now you can explore SingleStore logs through Grafana + Loki
+#### Now you can explore SingleStore logs through Grafana + Loki
 <img width="237" alt="Screen Shot 2022-02-01 at 2 42 01 PM" src="https://user-images.githubusercontent.com/16610646/152039628-dfbc60e1-5add-4d1c-95d4-fff0139572cf.png">
 
-### Expand the Log Browser in order to have a helpful UI
+#### Expand the Log Browser in order to have a helpful UI
 <img width="128" alt="Screen Shot 2022-02-01 at 2 42 27 PM" src="https://user-images.githubusercontent.com/16610646/152039715-46109465-a4a0-403a-922a-af8e363202bd.png">
 
-### Access SingleStore logs
+#### Access SingleStore logs
 <img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
 
 ## Grafana Dashboards
 > Kube-prometheus has also added 24 dashboards to Grafana to get you started with dashboard monitoring
 
-### Click on Dashboards > Browse
+#### Click on Dashboards > Browse
 <img width="247" alt="Screen Shot 2022-02-01 at 2 45 32 PM" src="https://user-images.githubusercontent.com/16610646/152040633-dfc416c5-ae0a-4036-b62e-b43243c590f3.png">
 
-### Expand the Default folder
+#### Expand the Default folder
 <img width="1373" alt="Screen Shot 2022-02-01 at 2 45 53 PM" src="https://user-images.githubusercontent.com/16610646/152040686-5a7c0dea-419a-45d9-9eab-fb5bc31b805b.png">
 
 ### Click on a dashboard to try it out! 
