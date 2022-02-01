@@ -164,8 +164,7 @@ kubectl apply -f manifests/
 ```
 kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ```
-
-## Add Loki + FluentBit with a persistant volume claim
+## [Install Grafana Loki](https://grafana.com/docs/loki/latest/installation/helm/) with a persistant volume claim 
 Prereqs: Install [Helm](https://helm.sh/docs/intro/install/)
 
 ```
@@ -174,16 +173,24 @@ helm repo add grafana https://grafana.github.io/helm-charts
 ```
 helm repo update
 ```
+### Choose Promtail or FluentBit
+> Note: you can change the size of the volume claim
+
+#### Install Loki + Promtail
+```
+helm upgrade --install loki --namespace=monitoring grafana/loki-stack  --set loki.persistence.enabled=true,loki.persistence.storageClassName=standard,loki.persistence.size=5Gi
+```
+
+#### Install Loki + FluentBit
 ```
 helm upgrade --install loki --namespace=monitoring grafana/loki-stack --set fluent-bit.enabled=true,promtail.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=standard,loki.persistence.size=5Gi
 ```
-> Note: you can change the size of the volume claim in the last command
 
 ## Add the Loki data source to Grafana
 
 #### Access Grafana locally
 ```
-kubectl --namespace monitoring port-forward svc/grafana 3000
+kubectl --namespace monitoring port-forward svc/grafana 3000:3000
 ``` 
 #### Go to Configuration > Data Sources
 <img width="252" alt="Screen Shot 2022-02-01 at 2 35 32 PM" src="https://user-images.githubusercontent.com/16610646/152038532-d4a3b68a-da39-4b94-b45c-a31401386b93.png">
@@ -207,7 +214,7 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 <img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
 
 ## Grafana Dashboards
-> Kube-prometheus has also added 24 dashboards to Grafana to get you started with dashboard monitoring
+> Kube-prometheus added 24 dashboards to Grafana to get you started with dashboard monitoring
 
 #### Click on Dashboards > Browse
 <img width="247" alt="Screen Shot 2022-02-01 at 2 45 32 PM" src="https://user-images.githubusercontent.com/16610646/152040633-dfc416c5-ae0a-4036-b62e-b43243c590f3.png">
@@ -217,4 +224,4 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 
 ### Click on a dashboard to try it out! 
 
-> Now we have installed a monitoring stack consisting of Prometheus, Grafana, Loki, and FluentBit
+> Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki
