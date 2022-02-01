@@ -197,5 +197,13 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 ### Click 'Save & Test' and you should see the message below
 <img width="570" alt="Screen Shot 2022-02-01 at 2 38 21 PM" src="https://user-images.githubusercontent.com/16610646/152038985-3d2c9fcf-92cd-4867-9e64-ec516af68d2e.png">
 
+### Now you can Explore SingleStore logs through Grafana
+<img width="237" alt="Screen Shot 2022-02-01 at 2 42 01 PM" src="https://user-images.githubusercontent.com/16610646/152039628-dfbc60e1-5add-4d1c-95d4-fff0139572cf.png">
+
+### Expand the Log Browser in order to have a helpful UI
+<img width="128" alt="Screen Shot 2022-02-01 at 2 42 27 PM" src="https://user-images.githubusercontent.com/16610646/152039715-46109465-a4a0-403a-922a-af8e363202bd.png">
+
+### Access SingleStore logs
+<img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
 
 
