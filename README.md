@@ -191,13 +191,13 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 ### Click add data source and then type in 'Loki'
 <img width="190" alt="Screen Shot 2022-02-01 at 2 36 44 PM" src="https://user-images.githubusercontent.com/16610646/152038758-e6f8d6fc-d802-4a22-a069-16c5dc95d63e.png">
 
-### Type in the Loki URL
+### Enter the Loki URL
 <img width="690" alt="Screen Shot 2022-02-01 at 2 37 45 PM" src="https://user-images.githubusercontent.com/16610646/152038840-e74cef93-b044-4edd-bca4-8dcc443f9787.png">
 
 ### Click 'Save & Test' and you should see the message below
 <img width="570" alt="Screen Shot 2022-02-01 at 2 38 21 PM" src="https://user-images.githubusercontent.com/16610646/152038985-3d2c9fcf-92cd-4867-9e64-ec516af68d2e.png">
 
-### Now you can Explore SingleStore logs through Grafana
+### Now you can explore SingleStore logs through Grafana + Loki
 <img width="237" alt="Screen Shot 2022-02-01 at 2 42 01 PM" src="https://user-images.githubusercontent.com/16610646/152039628-dfbc60e1-5add-4d1c-95d4-fff0139572cf.png">
 
 ### Expand the Log Browser in order to have a helpful UI
@@ -206,6 +206,7 @@ kubectl --namespace monitoring port-forward svc/grafana 3000
 ### Access SingleStore logs
 <img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
 
+## Grafana Dashboards
 > Kube-prometheus has also added 24 dashboards to Grafana to get you started with dashboard monitoring
 
 ### Click on Dashboards > Browse
