@@ -213,6 +213,8 @@ kubectl --namespace monitoring port-forward svc/grafana 3000:3000
 #### Access SingleStore logs
 <img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
 
+> Here is further information on [LogQL Queries](https://grafana.com/docs/loki/latest/logql/)
+
 ## Grafana Dashboards
 > Kube-prometheus added 24 dashboards to Grafana to get you started with dashboard monitoring
 
@@ -225,3 +227,4 @@ kubectl --namespace monitoring port-forward svc/grafana 3000:3000
 ### Click on a dashboard to try it out! 
 
 > Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki
+
