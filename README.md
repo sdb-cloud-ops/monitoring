@@ -1,4 +1,4 @@
-# Monitoring your Kubernetes stack on GKE
+# Monitoring SingleStore on Kubernetes
 
 ## Install Prometheus
 > Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
