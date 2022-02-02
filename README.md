@@ -166,9 +166,9 @@ kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ```
 ## Install Grafana Loki with a persistant volume claim 
 
-> Further installation methods are detailed [here](https://grafana.com/docs/loki/latest/installation/).
+> Further installation methods are detailed [here](https://grafana.com/docs/loki/latest/installation/)
 
-Prereqs: Install [Helm](https://helm.sh/docs/intro/install/)
+Prereqs: Install [Helm](https://helm.sh/docs/intro/install/), then run the commands below
 
 ```
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -177,7 +177,7 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 ```
 ### Choose Promtail or FluentBit
-> Note: you can change the size of the volume claim
+> Note: you can change the size of the volume claim in the below commands
 
 #### Install Loki + Promtail
 ```
@@ -229,8 +229,8 @@ kubectl --namespace monitoring port-forward svc/grafana 3000:3000
 
 ### Click on a dashboard to try it out! 
 
-Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki. Further reading below:
-[Dashboard overview](https://grafana.com/docs/grafana/latest/dashboards/)
+Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki. Further reading:
+[Dashboard overview](https://grafana.com/docs/grafana/latest/dashboards/),
 [Grafana alerting](https://grafana.com/docs/grafana/latest/alerting/unified-alerting/)
 
 
