@@ -164,7 +164,10 @@ kubectl apply -f manifests/
 ```
 kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ```
-## [Install Grafana Loki](https://grafana.com/docs/loki/latest/installation/helm/) with a persistant volume claim 
+## Install Grafana Loki with a persistant volume claim 
+
+> Further installation methods are detailed [here](https://grafana.com/docs/loki/latest/installation/).
+
 Prereqs: Install [Helm](https://helm.sh/docs/intro/install/)
 
 ```
@@ -226,5 +229,8 @@ kubectl --namespace monitoring port-forward svc/grafana 3000:3000
 
 ### Click on a dashboard to try it out! 
 
-> Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki
+Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki. Further reading below:
+[Dashboard overview](https://grafana.com/docs/grafana/latest/dashboards/)
+[Grafana alerting](https://grafana.com/docs/grafana/latest/alerting/unified-alerting/)
+
 
