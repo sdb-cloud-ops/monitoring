@@ -1,6 +1,7 @@
 # Monitoring SingleStore on Kubernetes
+This document will show you how to install Prometheus, Grafana, and Grafana Loki on a GKE cluster. It will also provide basics on Grafana use including setting up the Loki data source in Grafana in order to access logs, and accessing the default dashboards provided by the kube-prometheus stack.
 
-## Install Prometheus
+# Prometheus
 > Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
 
 ### Install dependencies
@@ -160,11 +161,66 @@ kubectl apply --server-side -f manifests/setup
 kubectl apply -f manifests/
 ```
 
-### Access Prometheus locally
+### To access Prometheus locally
+Run the command below and then go to http://localhost:9090 in your web browser to access Prometheus
 ```
 kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 ```
-## Install Grafana Loki with a persistant volume claim 
+# Grafana Loki
+
+> Note: further installation methods are provided in the Reference section below
+
+
+
+
+### Add the Loki data source to Grafana
+
+Run the command below and then go to http://localhost:3000 in your web browser to access Grafana
+```
+kubectl --namespace monitoring port-forward svc/grafana 3000:3000
+``` 
+
+Go to Configuration > Data Sources
+<img width="252" alt="Screen Shot 2022-02-01 at 2 35 32 PM" src="https://user-images.githubusercontent.com/16610646/152038532-d4a3b68a-da39-4b94-b45c-a31401386b93.png">
+
+Click add data source and then type in 'Loki'
+<img width="190" alt="Screen Shot 2022-02-01 at 2 36 44 PM" src="https://user-images.githubusercontent.com/16610646/152038758-e6f8d6fc-d802-4a22-a069-16c5dc95d63e.png">
+
+Enter the Loki URL
+<img width="690" alt="Screen Shot 2022-02-01 at 2 37 45 PM" src="https://user-images.githubusercontent.com/16610646/152038840-e74cef93-b044-4edd-bca4-8dcc443f9787.png">
+
+Click 'Save & Test' and you should see the message below
+<img width="570" alt="Screen Shot 2022-02-01 at 2 38 21 PM" src="https://user-images.githubusercontent.com/16610646/152038985-3d2c9fcf-92cd-4867-9e64-ec516af68d2e.png">
+
+Now you can explore SingleStore logs through Grafana + Loki
+<img width="237" alt="Screen Shot 2022-02-01 at 2 42 01 PM" src="https://user-images.githubusercontent.com/16610646/152039628-dfbc60e1-5add-4d1c-95d4-fff0139572cf.png">
+
+Expand the Log Browser in order to have a helpful UI
+<img width="128" alt="Screen Shot 2022-02-01 at 2 42 27 PM" src="https://user-images.githubusercontent.com/16610646/152039715-46109465-a4a0-403a-922a-af8e363202bd.png">
+
+Example query with SingleStore logs
+<img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
+
+> Here is further information on [LogQL Queries](https://grafana.com/docs/loki/latest/logql/)
+
+## Access Grafana Dashboards
+> Kube-prometheus added 24 dashboards to Grafana to get you started with dashboard monitoring
+
+Click on Dashboards > Browse
+<img width="247" alt="Screen Shot 2022-02-01 at 2 45 32 PM" src="https://user-images.githubusercontent.com/16610646/152040633-dfc416c5-ae0a-4036-b62e-b43243c590f3.png">
+
+Expand the Default folder
+<img width="1373" alt="Screen Shot 2022-02-01 at 2 45 53 PM" src="https://user-images.githubusercontent.com/16610646/152040686-5a7c0dea-419a-45d9-9eab-fb5bc31b805b.png">
+
+Click on a dashboard to try it out! 
+
+Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki. Further reading:
+[Dashboard overview](https://grafana.com/docs/grafana/latest/dashboards/),
+[Grafana alerting](https://grafana.com/docs/grafana/latest/alerting/unified-alerting/)
+
+## Further installation methods of Grafana Loki
+
+### Install Grafana Loki with Helm with a persistant volume claim 
 
 > Further installation methods are detailed [here](https://grafana.com/docs/loki/latest/installation/)
 
@@ -176,61 +232,12 @@ helm repo add grafana https://grafana.github.io/helm-charts
 ```
 helm repo update
 ```
-### Choose Promtail or FluentBit
-> Note: you can change the size of the volume claim in the below commands
 
 #### Install Loki + Promtail
 ```
 helm upgrade --install loki --namespace=monitoring grafana/loki-stack  --set loki.persistence.enabled=true,loki.persistence.storageClassName=standard,loki.persistence.size=5Gi
 ```
+> Note: you can change the size of the volume claim
 
-#### Install Loki + FluentBit
-```
-helm upgrade --install loki --namespace=monitoring grafana/loki-stack --set fluent-bit.enabled=true,promtail.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=standard,loki.persistence.size=5Gi
-```
-
-## Add the Loki data source to Grafana
-
-#### Access Grafana locally
-```
-kubectl --namespace monitoring port-forward svc/grafana 3000:3000
-``` 
-#### Go to Configuration > Data Sources
-<img width="252" alt="Screen Shot 2022-02-01 at 2 35 32 PM" src="https://user-images.githubusercontent.com/16610646/152038532-d4a3b68a-da39-4b94-b45c-a31401386b93.png">
-
-#### Click add data source and then type in 'Loki'
-<img width="190" alt="Screen Shot 2022-02-01 at 2 36 44 PM" src="https://user-images.githubusercontent.com/16610646/152038758-e6f8d6fc-d802-4a22-a069-16c5dc95d63e.png">
-
-#### Enter the Loki URL
+The Loki URL is different when adding the Loki datasource to Grafana after installing with Helm
 <img width="690" alt="Screen Shot 2022-02-01 at 2 37 45 PM" src="https://user-images.githubusercontent.com/16610646/152038840-e74cef93-b044-4edd-bca4-8dcc443f9787.png">
-
-#### Click 'Save & Test' and you should see the message below
-<img width="570" alt="Screen Shot 2022-02-01 at 2 38 21 PM" src="https://user-images.githubusercontent.com/16610646/152038985-3d2c9fcf-92cd-4867-9e64-ec516af68d2e.png">
-
-#### Now you can explore SingleStore logs through Grafana + Loki
-<img width="237" alt="Screen Shot 2022-02-01 at 2 42 01 PM" src="https://user-images.githubusercontent.com/16610646/152039628-dfbc60e1-5add-4d1c-95d4-fff0139572cf.png">
-
-#### Expand the Log Browser in order to have a helpful UI
-<img width="128" alt="Screen Shot 2022-02-01 at 2 42 27 PM" src="https://user-images.githubusercontent.com/16610646/152039715-46109465-a4a0-403a-922a-af8e363202bd.png">
-
-#### Access SingleStore logs
-<img width="1368" alt="Screen Shot 2022-02-01 at 2 42 46 PM" src="https://user-images.githubusercontent.com/16610646/152039764-446028e1-9fb8-4445-ab33-0d646031d550.png">
-
-> Here is further information on [LogQL Queries](https://grafana.com/docs/loki/latest/logql/)
-
-## Grafana Dashboards
-> Kube-prometheus added 24 dashboards to Grafana to get you started with dashboard monitoring
-
-#### Click on Dashboards > Browse
-<img width="247" alt="Screen Shot 2022-02-01 at 2 45 32 PM" src="https://user-images.githubusercontent.com/16610646/152040633-dfc416c5-ae0a-4036-b62e-b43243c590f3.png">
-
-#### Expand the Default folder
-<img width="1373" alt="Screen Shot 2022-02-01 at 2 45 53 PM" src="https://user-images.githubusercontent.com/16610646/152040686-5a7c0dea-419a-45d9-9eab-fb5bc31b805b.png">
-
-### Click on a dashboard to try it out! 
-
-Now we have installed a monitoring stack consisting of Prometheus and Grafana Loki. Further reading:
-[Dashboard overview](https://grafana.com/docs/grafana/latest/dashboards/),
-[Grafana alerting](https://grafana.com/docs/grafana/latest/alerting/unified-alerting/)
-
-
