@@ -1,5 +1,5 @@
 # Monitoring SingleStore on Kubernetes
-This document will show you how to install Prometheus, Grafana, and Grafana Loki on a GKE cluster. It will also provide basics on Grafana use including setting up the Loki data source in Grafana in order to access logs, and accessing the default dashboards provided by the kube-prometheus stack.
+This document will show you how to install Prometheus, Grafana, and Grafana Loki on a GKE cluster. It will also provide basics on Grafana use including adding the Loki data source to Grafana in order to view and query logs and exploring the default dashboards provided by the kube-prometheus stack.
 
 # Prometheus
 > Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
@@ -275,7 +275,7 @@ loki + promtail + gateway {
   },
 }
 ```
-#### Run tk export manifests environments/loki
+#### Use tanka to create the yaml files
 ```
 tk export manifests environments/loki
 ```
