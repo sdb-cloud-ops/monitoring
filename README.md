@@ -176,6 +176,9 @@ For this installation, we will be creating a Google cloud storage bucket for our
 
 ### Prerequisites
 
+#### Install [Tanka](https://github.com/grafana/tanka/releases)
+> MacOS users can use `brew install tanka`
+  
 #### Create a Google cloud bucket and service account
 Go to the Google cloud storage browser, and click `create a bucket`. We will need to create a service account in order for Loki to access the bucket, so next, go to IAM & Admin > Service Accounts, and `create a service account`. I gave my service account `Storage Admin` and `Storage Object Admin` roles. Once the service account is created, click into the account and go to the `Keys` section. There you can click `add key` and make sure to save the downloaded file.  
 
@@ -183,8 +186,7 @@ Go to the Google cloud storage browser, and click `create a bucket`. We will nee
 ```
 kubectl -n monitoring create secret generic google-key --from-file=key.json=<path/to/downloaded/key.json>
 ```
-#### Install [Tanka](https://github.com/grafana/tanka/releases)
-> MacOS users can use `brew install tanka`
+
 
 ### Install Grafana Loki with Tanka
 > Please refer to [this documentation](https://grafana.com/docs/loki/latest/installation/tanka/) for reference.
@@ -212,6 +214,76 @@ tk env add environments/loki --namespace=monitoring --server=<Kubernetes API ser
 ```
 jb install github.com/grafana/loki/production/ksonnet/loki@main
 jb install github.com/grafana/loki/production/ksonnet/promtail@main
+```
+#### Create the htpasswd file 
+This example creates a `.loki` file with the `loki` username
+```
+htpasswd -c .loki loki
+```
+It will prompt for a new password. Enter this twice. Then view the contents of the file for input into the `htpasswd_contents:` section of the `main.jsonnet`
+
+#### Edit the environments/loki/main.jsonnet file 
+```
+vim environments/loki/main.jsonnet
+```
+```
+local gateway = import 'loki/gateway.libsonnet';
+local loki = import 'loki/loki.libsonnet';
+local promtail = import 'promtail/promtail.libsonnet';
+
+loki + promtail + gateway {
+  _config+:: {
+    namespace: 'monitoring',
+    htpasswd_contents: 'loki:$apr1$H4yGiGNg$ssl5/NymaGFRUvxIV1Nyr.', //content of your .loki file created above
+
+    // GCS variables -- Remove if not using gcs
+    storage_backend: 'gcs',
+    gcs_bucket_name: 'bucket',
+
+    //Set this variable based on the type of object storage you're using.
+    boltdb_shipper_shared_store: 'gcs',
+
+    //Update the object_store and from fields
+    loki+: {
+      schema_config: {
+        configs: [{
+          from: 'YYYY-MM-DD', //set this date to the date exactly 2 weeks ago from today
+          store: 'boltdb-shipper',
+          object_store: 'gcs',
+          schema: 'v11',
+          index: {
+            prefix: '%s_index_' % $._config.table_prefix,
+            period: '%dh' % $._config.index_period_hours,
+          },
+        }],
+      },
+    },
+
+    //Update the container_root_path if necessary
+    promtail_config+: {
+      clients: [{
+        scheme:: 'http',
+        hostname:: 'gateway.%(namespace)s.svc' % $._config,
+        username:: 'loki',
+        password:: 'password', //same password that was used for the loki username in the htpasswd file
+        container_root_path:: '/var/lib/docker',
+      }],
+    },
+
+    replication_factor: 3,
+    consul_replicas: 1,
+  },
+}
+```
+#### Run tk export manifests environments/loki
+```
+tk export manifests environments/loki
+```
+This will give you a `manifests` directory of yaml files for review.
+
+#### Apply the yaml files to the kubernetes cluster
+```
+kubectl --namespace monitoring create -f manifests
 ```
 
 ## Add the Loki data source to Grafana
