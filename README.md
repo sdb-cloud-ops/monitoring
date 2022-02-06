@@ -172,9 +172,49 @@ kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 
 ## GKE
 
+For this installation, we will be creating a Google cloud storage bucket for our backend log store.
 
+### Prerequisites
 
-### Add the Loki data source to Grafana
+#### Create a Google cloud bucket and service account
+Go to the Google cloud storage browser, and click `create a bucket`. We will need to create a service account in order for Loki to access the bucket, so next, go to IAM & Admin > Service Accounts, and `create a service account`. I gave my service account `Storage Admin` and `Storage Object Admin` roles. Once the service account is created, click into the account and go to the `Keys` section. There you can click `add key` and make sure to save the downloaded file.  
+
+#### Create a secret based off the google key
+```
+kubectl -n monitoring create secret generic google-key --from-file=key.json=<path/to/downloaded/key.json>
+```
+#### Install [Tanka](https://github.com/grafana/tanka/releases)
+> MacOS users can use `brew install tanka`
+
+### Install Grafana Loki with Tanka
+> Please refer to [this documentation](https://grafana.com/docs/loki/latest/installation/tanka/) for reference.
+
+#### Create a local directory for the Loki environment
+```
+mkdir loki
+```
+```
+cd loki
+```
+#### Initialize Tanka
+```
+tk init
+```
+#### Find your kubernetes api server 
+```
+vim .kube/config
+```
+Find the `- cluster` section of the cluster you are using, and locate the `server:` section. It will be right below the cluster certificate, and right above the cluster name. This is your kubernetes api server. 
+```
+tk env add environments/loki --namespace=monitoring --server=<Kubernetes API server>
+```
+#### Download and install the Loki and Promtail module using jb
+```
+jb install github.com/grafana/loki/production/ksonnet/loki@main
+jb install github.com/grafana/loki/production/ksonnet/promtail@main
+```
+
+## Add the Loki data source to Grafana
 
 Run the command below and then go to http://localhost:3000 in your web browser to access Grafana
 ```
