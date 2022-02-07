@@ -204,7 +204,7 @@ tk init
 ```
 #### Find your kubernetes api server 
 ```
-vim .kube/config
+vim ~/.kube/config
 ```
 Find the `- cluster` section of the cluster you are using, and locate the `server:` section. It will be right below the cluster certificate, and right above the cluster name. This is your kubernetes api server. 
 ```
