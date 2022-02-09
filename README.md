@@ -4,7 +4,7 @@ This document will show you how to install Prometheus, Grafana, and Grafana Loki
 # Prometheus
 > Note we are using the [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) stack. Please refer to this doc for reference.
 
-### Install dependencies
+#### Install dependencies
 > On MacOS you can use `brew` to install these packages
 
 1. [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler)
@@ -19,7 +19,7 @@ This document will show you how to install Prometheus, Grafana, and Grafana Loki
 4. wget
 
 
-### Create the install directory
+#### Create the install directory
 ```
 mkdir kube-prometheus
 ```
@@ -27,7 +27,7 @@ mkdir kube-prometheus
 cd kube-prometheus
 ```
 
-### Initialize jb and install kube-prometheus
+#### Initialize jb and install kube-prometheus
 ```
 jb init
 ```
@@ -35,7 +35,7 @@ jb init
 jb install github.com/prometheus-operator/kube-prometheus/jsonnet/kube-prometheus@main
 ```
 
-### Pull the example.jsonnet and build.sh files
+#### Pull the example.jsonnet and build.sh files
 ```
 wget https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/example.jsonnet -O example.jsonnet
 ```
@@ -43,12 +43,12 @@ wget https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/
 wget https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/build.sh -O build.sh
 ```
 
-### Update jb
+#### Update jb
 ```
 jb update
 ```
 
-### Make build.sh executable
+#### Make build.sh executable
 ```
 chmod +x build.sh
 ```
@@ -58,7 +58,7 @@ chmod +x build.sh
 > ```jsonnet -J vendor -m manifests "${1-example.jsonnet}" | xargs -I{} sh -c 'cat {} | $(go env GOPATH)/bin/gojsontoyaml > {}.yaml; rm -f {}' -- {}```
 >
 
-### Build the customization file
+#### Build the customization file
 
 ```
 vim memsql.jsonnet
@@ -148,12 +148,12 @@ local kp = (import 'kube-prometheus/main.libsonnet') + {
 > Note: Only change the namespace inside of this file where it says `singlestore` to the namespace that you have SingleStore deployed.
 
 
-### Apply the build to the manifest files
+#### Apply the build to the manifest files
 ```
 ./build.sh memsql.jsonnet
 ```
 
-### Create the kubernetes objects
+#### Create the kubernetes objects
 ```
 kubectl apply --server-side -f manifests/setup
 ```
@@ -161,7 +161,7 @@ kubectl apply --server-side -f manifests/setup
 kubectl apply -f manifests/
 ```
 
-### To access Prometheus locally
+#### To access Prometheus locally
 Run the command below and then go to http://localhost:9090 in your web browser to access Prometheus
 ```
 kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
