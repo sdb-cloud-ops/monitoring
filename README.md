@@ -321,9 +321,8 @@ vim lib/gcsBucket.libsonnet
     'config.expand-env':'true',
   },
 
-  //this should work but it deletes the file
-  //querier_data_pvc+::
-  //  pvc.mixin.spec.withStorageClassName('standard'),
+  querier_data_pvc+:
+    pvc.mixin.spec.withStorageClassName('standard'),
 
 
   //ingester
