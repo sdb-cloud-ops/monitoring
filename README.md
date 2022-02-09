@@ -223,7 +223,7 @@ htpasswd -c .loki loki
 It will prompt for a new password. Enter this twice. Then view the contents of the file for input into the `htpasswd_contents:` section of the `main.jsonnet`
 
 #### Edit the environments/loki/main.jsonnet file 
-Make sure to replace the items with comments beside the fields to values that are specific to your deployment.
+Make sure to replace the commented items with values that are specific to your deployment.
 ```
 vim environments/loki/main.jsonnet
 ```
@@ -281,7 +281,7 @@ loki + promtail + gateway + gcsBucket {
 ```
 #### Create a new file in the lib directory that edits the yaml files for GKE specific variables
 ```
-vim gcsBucket.libsonnet
+vim lib/gcsBucket.libsonnet
 ```
 ```
 //gcsBucket.libsonnet
