@@ -223,6 +223,7 @@ htpasswd -c .loki loki
 It will prompt for a new password. Enter this twice. Then view the contents of the file for input into the `htpasswd_contents:` section of the `main.jsonnet`
 
 #### Edit the environments/loki/main.jsonnet file 
+Make sure to replace the items with comments beside the fields to values that are specific to your deployment.
 ```
 vim environments/loki/main.jsonnet
 ```
@@ -230,24 +231,27 @@ vim environments/loki/main.jsonnet
 local gateway = import 'loki/gateway.libsonnet';
 local loki = import 'loki/loki.libsonnet';
 local promtail = import 'promtail/promtail.libsonnet';
+local k = import 'ksonnet-util/kausal.libsonnet';
+local gcsBucket = import 'gcsBucket.libsonnet';
 
-loki + promtail + gateway {
+loki + promtail + gateway + gcsBucket {
+
   _config+:: {
-    namespace: 'monitoring',
-    htpasswd_contents: 'loki:$apr1$H4yGiGNg$ssl5/NymaGFRUvxIV1Nyr.', //content of your .loki file created above
+    namespace: 'loki',
+    htpasswd_contents: 'loki:$apr1$i.G5yqP8$LGo1ANcwfGH87unfpIr6m.', //content of your .loki file created above
 
     // GCS variables -- Remove if not using gcs
     storage_backend: 'gcs',
-    gcs_bucket_name: 'bucket',
+    gcs_bucket_name: 'sdb-loki', //name of the google bucket
 
     //Set this variable based on the type of object storage you're using.
-    boltdb_shipper_shared_store: 'gcs',
+    boltdb_shipper_shared_store: 'gcs', 
 
     //Update the object_store and from fields
     loki+: {
       schema_config: {
         configs: [{
-          from: 'YYYY-MM-DD', //set this date to the date exactly 2 weeks ago from today
+          from: '2022-02-02', //set this date to the date exactly 2 weeks ago from today
           store: 'boltdb-shipper',
           object_store: 'gcs',
           schema: 'v11',
@@ -265,7 +269,7 @@ loki + promtail + gateway {
         scheme:: 'http',
         hostname:: 'gateway.%(namespace)s.svc' % $._config,
         username:: 'loki',
-        password:: 'password', //same password that was used for the loki username in the htpasswd file
+        password:: 'loki', //same password that was used for the loki username in the htpasswd file
         container_root_path:: '/var/lib/docker',
       }],
     },
@@ -273,6 +277,110 @@ loki + promtail + gateway {
     replication_factor: 3,
     consul_replicas: 1,
   },
+}
+```
+#### Create a new file in the lib directory that edits the yaml files for GKE specific variables
+```
+vim gcsBucket.libsonnet
+```
+```
+//gcsBucket.libsonnet
+
+// Import libs
+{
+  local volumeMount = $.core.v1.volumeMount,
+  local container = $.core.v1.container,
+  local statefulSet = $.apps.v1.statefulSet,
+  local volume = $.core.v1.volume,
+  local secret = $.core.v1.secret,
+  local deployment = $.apps.v1.deployment,
+  local pvc = $.core.v1.persistentVolumeClaim,
+  local spec = $.core.v1.spec,
+  local storageClass = $.storage.v1.storageClass,
+
+  //distributor
+  distributor_container+::
+    container.withEnvMap({GOOGLE_APPLICATION_CREDENTIALS:'/var/secrets/google/key.json'}),
+
+  distributor_deployment+: 
+    $.util.secretVolumeMount('google', '/var/secrets/google'),
+
+  distributor_args+:: {
+    'config.expand-env':'true',
+  },
+
+
+  //querier
+  querier_container+::
+    container.withEnvMap({GOOGLE_APPLICATION_CREDENTIALS:'/var/secrets/google/key.json'}),
+
+  querier_statefulset+::
+    $.util.secretVolumeMount('google', '/var/secrets/google'),
+
+  querier_args+:: {
+    'config.expand-env':'true',
+  },
+
+  //this should work but it deletes the file
+  //querier_data_pvc+::
+  //  pvc.mixin.spec.withStorageClassName('standard'),
+
+
+  //ingester
+  ingester_container+::
+    container.withEnvMap({GOOGLE_APPLICATION_CREDENTIALS:'/var/secrets/google/key.json'}),
+
+  ingester_statefulset+:
+    $.util.secretVolumeMount('google', '/var/secrets/google'),
+
+  ingester_args+:: {
+    'config.expand-env':'true',
+  },
+
+  ingester_data_pvc+::
+    pvc.mixin.spec.withStorageClassName('standard'),
+
+  ingester_wal_pvc+::
+    pvc.mixin.spec.withStorageClassName('standard'),
+
+  //compactor
+  compactor_container+::
+    container.withEnvMap({GOOGLE_APPLICATION_CREDENTIALS:'/var/secrets/google/key.json'}),
+
+  compactor_statefulset+:
+    $.util.secretVolumeMount('google', '/var/secrets/google'),
+
+  compactor_args+:: {
+    'config.expand-env':'true',
+  },
+
+  compactor_data_pvc+::
+    pvc.mixin.spec.withStorageClassName('standard'),
+
+
+  //table-manager
+  table_manager_container+::
+    container.withEnvMap({GOOGLE_APPLICATION_CREDENTIALS:'/var/secrets/google/key.json'}),
+
+  table_manager_deployment+: 
+    $.util.secretVolumeMount('google', '/var/secrets/google'),
+
+  table_manager_args+:: {
+    'config.expand-env':'true',
+  },
+
+
+  //query-frontend
+  query_frontend_container+::
+    container.withEnvMap({GOOGLE_APPLICATION_CREDENTIALS:'/var/secrets/google/key.json'}),
+
+  query_frontend_deployment+: 
+    $.util.secretVolumeMount('google', '/var/secrets/google'),
+    
+  query_frontend_args+:: {
+    'config.expand-env':'true',
+  },
+
 }
 ```
 #### Use tanka to create the yaml files
