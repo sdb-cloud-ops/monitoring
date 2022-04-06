@@ -12,6 +12,7 @@ This document will show you how to install Prometheus, Grafana, and Grafana Loki
 2. [jsonnet](https://github.com/google/jsonnet)
 
 3. [go](https://go.dev/doc/install)
+4. gojsontoyaml library
 ```
   go install github.com/brancz/gojsontoyaml@latest
   go install github.com/google/go-jsonnet/cmd/jsonnet@latest
